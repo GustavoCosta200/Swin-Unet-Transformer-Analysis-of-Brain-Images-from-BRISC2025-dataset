@@ -1,0 +1,58 @@
+project_name: tcc2_swin_unet_brisc
+seed: 42
+device: cuda
+paths:
+  dataset_root: ../brisc2025/segmentation_task
+  train_images: train/images
+  train_masks: train/masks
+  test_images: test/images
+  test_masks: test/masks
+  output_dir: ./outputs
+  checkpoint_dir: ./checkpoints
+experiment:
+  pipeline: P0
+  val_size: 0.2
+  max_train_samples: null
+  max_test_samples: null
+  num_workers: 0
+image:
+  size: 224
+  in_channels: 3
+  num_classes: 1
+  repeat_grayscale_to_rgb: true
+  normalize_mean: 0.5
+  normalize_std: 0.5
+preprocessing:
+  gaussian_kernel: 5
+  gaussian_sigma: 0
+  median_kernel: 5
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+augmentation:
+  rotate_limit: 10
+  shift_limit: 0.05
+  scale_limit: 0.1
+  brightness_limit: 0.1
+  contrast_limit: 0.1
+  gaussian_noise_var_limit:
+  - 5.0
+  - 20.0
+model:
+  name: official_swin_unet
+  official_repo_dir: ./external/Swin-Unet
+  official_config: ./external/Swin-Unet/configs/swin_tiny_patch4_window7_224_lite.yaml
+  pretrained_path: null
+train:
+  epochs: 100
+  batch_size: 16
+  learning_rate: 0.0001
+  weight_decay: 1.0e-05
+  early_stopping_patience: 15
+  loss: bce_dice
+  threshold: 0.5
+  save_best_by: val_dice
+data:
+  val_split: 0.2
+  max_train_samples: 1000
+  max_val_samples: 250
+  max_test_samples: 250

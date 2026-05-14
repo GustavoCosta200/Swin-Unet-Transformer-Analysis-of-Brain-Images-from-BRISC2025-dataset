@@ -1,0 +1,12 @@
+torch
+torchvision
+numpy
+pandas
+opencv-python
+albumentations
+scikit-learn
+PyYAML
+tqdm
+yacs
+einops
+timm
