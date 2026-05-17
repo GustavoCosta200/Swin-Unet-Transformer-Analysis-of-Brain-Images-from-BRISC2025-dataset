@@ -29,6 +29,5 @@ def build_train_augmentation(pipeline: str, cfg: Optional[Dict] = None) -> Optio
             brightness_limit=cfg.get("brightness_limit", 0.10),
             contrast_limit=cfg.get("contrast_limit", 0.10),
             p=0.4,
-        ),
-        A.GaussNoise(var_limit=tuple(cfg.get("gaussian_noise_var_limit", [5.0, 20.0])), p=0.2),
+        )
     ])

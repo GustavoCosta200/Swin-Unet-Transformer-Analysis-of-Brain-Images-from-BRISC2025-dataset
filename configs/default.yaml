@@ -15,11 +15,24 @@ paths:
   checkpoint_dir: ./checkpoints
 
 experiment:
-  pipeline: P0 # P0, P1, P2 ou P3
+  pipeline: P1 # P0, P1, P2 ou P3
   val_size: 0.20
   max_train_samples: null
   max_test_samples: null
-  num_workers: 0
+  num_workers: 2
+
+  # Mantém treino/validação/teste com a mesma quantidade de imagens por classe tumoral.
+  # O balanceamento é feito por subamostragem da menor classe.
+  balance_classes: true
+  balance_class_names: [glioma, meningioma, pituitary]
+
+  # Ajuste estes aliases se os nomes dos arquivos do BRISC no seu ambiente usarem
+  # outra abreviação para algum tumor.
+  # Exemplo esperado: brisc2025_train_00015_gl_ax_t1.jpg -> glioma.
+  class_aliases:
+    glioma: [glioma, gl]
+    meningioma: [meningioma, men, me]
+    pituitary: [pituitary, pit, pi]
 
 image:
   # A configuração oficial do Swin-Unet é baseada em 224x224.
@@ -27,6 +40,7 @@ image:
   size: 224
   in_channels: 3
   num_classes: 1
+
   # Como o BRISC é lido em tons de cinza, os canais são replicados para manter
   # compatibilidade com a configuração oficial e possíveis pesos pré-treinados.
   repeat_grayscale_to_rgb: true
@@ -46,28 +60,24 @@ augmentation:
   scale_limit: 0.10
   brightness_limit: 0.10
   contrast_limit: 0.10
-  gaussian_noise_var_limit: [5.0, 20.0]
+  
 
 model:
   name: official_swin_unet
   official_repo_dir: ./external/Swin-Unet
+
   # Após clonar o repositório oficial, confirme o nome exato do YAML disponível.
   # No repositório original costuma ser usado um YAML da família swin_tiny_patch4_window7_224.
   official_config: ./external/Swin-Unet/configs/swin_tiny_patch4_window7_224_lite.yaml
   pretrained_path: null
 
 train:
-  epochs: 100
+  epochs: 250
   batch_size: 16
   learning_rate: 0.0001
   weight_decay: 0.00001
   early_stopping_patience: 15
   loss: bce_dice
   threshold: 0.5
-  save_best_by: val_dice
+  save_best_by: val_loss
 
-data:
-  val_split: 0.2
-  max_train_samples: 1000
-  max_val_samples: 250
-  max_test_samples: 250

@@ -21,7 +21,7 @@ def main() -> None:
     tmp_dir = Path("configs/generated")
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    for pipeline in ["P0", "P1", "P2", "P3"]:
+    for pipeline in ["P2", "P3"]:
         cfg = copy.deepcopy(base_cfg)
         cfg["experiment"]["pipeline"] = pipeline
         cfg_path = tmp_dir / f"{pipeline}.yaml"

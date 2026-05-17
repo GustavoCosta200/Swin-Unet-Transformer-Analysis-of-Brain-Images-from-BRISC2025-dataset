@@ -59,14 +59,16 @@ def preprocess_image_and_mask(
     if mask.ndim == 3:
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 
-    if pipeline == "P1":
+    if pipeline in {"P1", "P2", "P3"}:
         image = apply_gaussian(
             image,
             kernel_size=preprocessing_cfg.get("gaussian_kernel", 5),
             sigma=preprocessing_cfg.get("gaussian_sigma", 0),
         )
-    elif pipeline in {"P2", "P3"}:
+        
         image = apply_median(image, kernel_size=preprocessing_cfg.get("median_kernel", 5))
+        
+    elif pipeline != "P1":
         image = apply_clahe(
             image,
             clip_limit=preprocessing_cfg.get("clahe_clip_limit", 2.0),
