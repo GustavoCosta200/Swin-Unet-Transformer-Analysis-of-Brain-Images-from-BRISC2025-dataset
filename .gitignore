@@ -2,6 +2,8 @@ checkpoints/*
 *.pt
 *.pth
 *.ckpt
-outputs/*
+src/models/*
+src/__pycache__/*
+*.pyc
 
 !.gitkeep

@@ -40,9 +40,9 @@ image:
   normalize_mean: 0.5
   normalize_std: 0.5
 preprocessing:
-  gaussian_kernel: 5
+  gaussian_kernel: 3
   gaussian_sigma: 0
-  median_kernel: 5
+  median_kernel: 3
   clahe_clip_limit: 2.0
   clahe_tile_grid_size: 8
 augmentation:
@@ -57,11 +57,11 @@ model:
   official_config: ./external/Swin-Unet/configs/swin_tiny_patch4_window7_224_lite.yaml
   pretrained_path: null
 train:
-  epochs: 250
+  epochs: 300
   batch_size: 16
   learning_rate: 0.0001
   weight_decay: 1.0e-05
-  early_stopping_patience: 15
+  early_stopping_patience: 30
   loss: bce_dice
   threshold: 0.5
   save_best_by: val_loss

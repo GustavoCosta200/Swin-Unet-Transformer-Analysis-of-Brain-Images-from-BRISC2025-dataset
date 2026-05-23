@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from typing import Dict, Tuple
+
 import cv2
 import numpy as np
 
-VALID_PIPELINES = {"P0", "P1", "P2", "P3"}
+
+# P4 = baseline + augmentation, sem filtros e sem CLAHE.
+VALID_PIPELINES = {"P0", "P1", "P2", "P3", "P4"}
 
 
 def _odd_kernel(value: int) -> int:
@@ -24,7 +27,11 @@ def apply_median(image: np.ndarray, kernel_size: int = 5) -> np.ndarray:
     return cv2.medianBlur(image, k)
 
 
-def apply_clahe(image: np.ndarray, clip_limit: float = 2.0, tile_grid_size: int = 8) -> np.ndarray:
+def apply_clahe(
+    image: np.ndarray,
+    clip_limit: float = 2.0,
+    tile_grid_size: int = 8,
+) -> np.ndarray:
     clahe = cv2.createCLAHE(
         clipLimit=float(clip_limit),
         tileGridSize=(int(tile_grid_size), int(tile_grid_size)),
@@ -46,11 +53,18 @@ def preprocess_image_and_mask(
     image_size: int,
     preprocessing_cfg: Dict,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Aplica P0, P1, P2 ou P3 antes da normalização/augmentations.
+    """Aplica o pré-processamento controlado de cada pipeline.
 
-    P3 recebe o mesmo pré-processamento da P2. O aumento de dados é aplicado
-    posteriormente em `augmentations.py`, apenas no conjunto de treino.
+    P0: baseline, sem filtros clássicos.
+    P1: filtro gaussiano + filtro de mediana.
+    P2: P1 + CLAHE.
+    P3: P2 + aumento de dados posteriormente, apenas no treino.
+    P4: P0 + aumento de dados posteriormente, apenas no treino.
+
+    A normalização é feita depois em `normalize_image`, para manter o mesmo
+    protocolo entre todas as pipelines.
     """
+    pipeline = str(pipeline).upper()
     if pipeline not in VALID_PIPELINES:
         raise ValueError(f"Pipeline inválido: {pipeline}. Use uma destas: {sorted(VALID_PIPELINES)}")
 
@@ -59,16 +73,19 @@ def preprocess_image_and_mask(
     if mask.ndim == 3:
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 
+    # P0 e P4 são baselines visuais: não aplicam filtros nem CLAHE.
     if pipeline in {"P1", "P2", "P3"}:
         image = apply_gaussian(
             image,
             kernel_size=preprocessing_cfg.get("gaussian_kernel", 5),
             sigma=preprocessing_cfg.get("gaussian_sigma", 0),
         )
-        
-        image = apply_median(image, kernel_size=preprocessing_cfg.get("median_kernel", 5))
-        
-    elif pipeline != "P1":
+        image = apply_median(
+            image,
+            kernel_size=preprocessing_cfg.get("median_kernel", 5),
+        )
+
+    if pipeline in {"P2", "P3"}:
         image = apply_clahe(
             image,
             clip_limit=preprocessing_cfg.get("clahe_clip_limit", 2.0),

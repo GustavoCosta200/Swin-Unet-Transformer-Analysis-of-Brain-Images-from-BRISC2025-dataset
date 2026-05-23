@@ -15,7 +15,13 @@ paths:
   checkpoint_dir: ./checkpoints
 
 experiment:
-  pipeline: P1 # P0, P1, P2 ou P3
+  # Pipelines disponíveis:
+  # P0: baseline, redimensionamento + binarização + normalização
+  # P1: P0 + filtro gaussiano + filtro de mediana
+  # P2: P1 + CLAHE
+  # P3: P2 + augmentation no treino
+  # P4: P0 + augmentation no treino, sem filtros e sem CLAHE
+  pipeline: P4
   val_size: 0.20
   max_train_samples: null
   max_test_samples: null
@@ -48,9 +54,9 @@ image:
   normalize_std: 0.5
 
 preprocessing:
-  gaussian_kernel: 5
+  gaussian_kernel: 3
   gaussian_sigma: 0
-  median_kernel: 5
+  median_kernel: 3
   clahe_clip_limit: 2.0
   clahe_tile_grid_size: 8
 
@@ -60,6 +66,8 @@ augmentation:
   scale_limit: 0.10
   brightness_limit: 0.10
   contrast_limit: 0.10
+  horizontal_flip: true
+  elastic_transform: false
   
 
 model:
@@ -72,12 +80,20 @@ model:
   pretrained_path: null
 
 train:
-  epochs: 250
+  epochs: 600
   batch_size: 16
   learning_rate: 0.0001
   weight_decay: 0.00001
-  early_stopping_patience: 15
+  early_stopping_patience: 30
   loss: bce_dice
   threshold: 0.5
-  save_best_by: val_loss
+  save_best_by: val_dice
 
+evaluation:
+  threshold: 0.5
+  metrics:
+    - dice
+    - iou
+    - pixel_accuracy
+    - precision
+    - recall

@@ -1,0 +1,11 @@
+{
+  "dice": 0.7833874696508794,
+  "iou": 0.6916343776259836,
+  "pixel_accuracy": 0.9935071016234049,
+  "precision": 0.7971780459711871,
+  "recall": 0.8204235231156737,
+  "num_samples": 762,
+  "threshold": 0.5,
+  "mean_inference_time_seconds": 0.007679705905652877,
+  "total_inference_time_seconds": 5.851935900107492
+}

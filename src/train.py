@@ -21,6 +21,8 @@ from .metrics import MetricAverager, segmentation_metrics
 from .models import build_official_swin_unet
 from .utils import ensure_dir, get_device, save_json, set_seed
 
+from .visualization import save_pipeline_debug_sample
+
 
 def build_dataloaders(config: Dict) -> Tuple[DataLoader, DataLoader]:
     paths = resolve_dataset_paths(config)
@@ -74,6 +76,13 @@ def build_dataloaders(config: Dict) -> Tuple[DataLoader, DataLoader]:
         shuffle=False,
         num_workers=experiment_cfg.get("num_workers", 0),
         pin_memory=torch.cuda.is_available(),
+    )
+    
+    save_pipeline_debug_sample(
+        dataset=train_ds,
+        cfg=config,
+        split_name="train",
+        sample_index=0
     )
 
     return train_loader, val_loader
@@ -147,7 +156,7 @@ def main() -> None:
         weight_decay=config["train"].get("weight_decay", 1e-5),
     )
 
-    best_loss = 1.0
+    best_dice = 0.0
     best_path = checkpoint_dir / f"{pipeline}_best.pt"
     patience = int(config["train"].get("early_stopping_patience", 15))
     epochs_without_improvement = 0
@@ -183,14 +192,15 @@ def main() -> None:
         pd.DataFrame(history).to_csv(output_dir / "history.csv", index=False)
 
         print(
+            f"train_dice={train_metrics['dice']:.4f} |"
             f"train_loss={train_metrics['loss']:.4f} | "
             f"val_loss={val_metrics['loss']:.4f} | "
             f"val_dice={val_metrics['dice']:.4f} | "
             f"val_iou={val_metrics['iou']:.4f}"
         )
 
-        if val_metrics['loss'] < best_loss:
-            best_loss = val_metrics['loss']
+        if val_metrics['dice'] > best_dice:
+            best_dice = val_metrics['dice']
             epochs_without_improvement = 0
 
             torch.save(
@@ -198,15 +208,15 @@ def main() -> None:
                     "model_state_dict": model.state_dict(),
                     "config": config,
                     "epoch": epoch,
-                    "best_val_dice": val_metrics['dice'],
-                    "best_val_loss": best_loss,
+                    "best_val_dice": best_dice,
+                    "best_val_loss": val_metrics['loss'],
                     "best_iou": val_metrics['iou']
                 },
                 best_path,
             )
 
             save_json(
-                {"best_epoch": epoch, "best_val_dice": val_metrics['dice'], "best_val_loss": best_loss,
+                {"best_epoch": epoch, "best_val_dice": best_dice, "best_val_loss": val_metrics['loss'],
                  "best_iou": val_metrics['iou']},
                 output_dir / "best_metrics.json",
             )
