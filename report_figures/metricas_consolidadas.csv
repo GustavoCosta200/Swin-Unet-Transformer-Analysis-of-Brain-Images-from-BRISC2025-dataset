@@ -1,0 +1,6 @@
+﻿pipeline,split,source_file,epoch,loss,dice,iou,pixel_accuracy,description
+P0,val,D:\TCC2\swin_unet_tcc\outputs\P0\history.csv,128.0,0.1282366232376097,0.779828436575365,0.6871228579685892,0.9939260819307778,Baseline
+P1,val,D:\TCC2\swin_unet_tcc\outputs\P1\history.csv,146.0,0.1246997266237357,0.7850441527816484,0.6903804658286284,0.9939920091663632,Gaussiano + Mediana
+P2,val,D:\TCC2\swin_unet_tcc\outputs\P2\history.csv,163.0,0.1279128167713371,0.7811435376265572,0.6912854587218585,0.9940766070162436,P1 + CLAHE
+P3,val,D:\TCC2\swin_unet_tcc\outputs\P3\history.csv,292.0,0.096570767709615,0.8328279895256496,0.7454472776767305,0.994958324857997,Pré-processamento + aumento de dados
+P4,val,D:\TCC2\swin_unet_tcc\outputs\P4\history.csv,340.0,0.0914305920627492,0.8410072846578756,0.7532780921338086,0.995504509554892,Aumento de dados sem pré-processamento

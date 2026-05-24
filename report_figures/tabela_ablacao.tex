@@ -1,0 +1,15 @@
+\begin{table}
+\caption{Tabela de ablação das pipelines avaliadas.}
+\label{tab:ablacao_pipelines}
+\begin{tabular}{llrrrr}
+\toprule
+Pipeline & Descrição & Val Dice & Val IoU & Val Loss & Melhor Época \\
+\midrule
+P0 & Baseline & 0.7798 & 0.6871 & 0.1282 & 128.0000 \\
+P1 & Gaussiano + Mediana & 0.7850 & 0.6904 & 0.1247 & 146.0000 \\
+P2 & P1 + CLAHE & 0.7811 & 0.6913 & 0.1279 & 163.0000 \\
+P3 & Pré-processamento + aumento de dados & 0.8328 & 0.7454 & 0.0966 & 292.0000 \\
+P4 & Aumento de dados sem pré-processamento & 0.8410 & 0.7533 & 0.0914 & 340.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}

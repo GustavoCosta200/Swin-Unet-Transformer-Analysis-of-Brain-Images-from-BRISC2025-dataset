@@ -5,5 +5,10 @@ checkpoints/*
 src/models/*
 src/__pycache__/*
 *.pyc
+outputs/P0/predictions
+outputs/P1/predictions
+outputs/P2/predictions
+outputs/P3/predictions
+outputs/P4/predictions
 
 !.gitkeep

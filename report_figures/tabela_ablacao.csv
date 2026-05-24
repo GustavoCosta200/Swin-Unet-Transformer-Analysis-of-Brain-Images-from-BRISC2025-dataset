@@ -1,0 +1,6 @@
+﻿Pipeline,Descrição,Val Dice,Val IoU,Val Loss,Melhor Época
+P0,Baseline,0.7798,0.6871,0.1282,128.0
+P1,Gaussiano + Mediana,0.785,0.6904,0.1247,146.0
+P2,P1 + CLAHE,0.7811,0.6913,0.1279,163.0
+P3,Pré-processamento + aumento de dados,0.8328,0.7454,0.0966,292.0
+P4,Aumento de dados sem pré-processamento,0.841,0.7533,0.0914,340.0

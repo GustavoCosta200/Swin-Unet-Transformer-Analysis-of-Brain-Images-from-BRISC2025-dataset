@@ -6,6 +6,6 @@
   "recall": 0.8145701214084475,
   "num_samples": 762,
   "threshold": 0.5,
-  "mean_inference_time_seconds": 0.007714316666659745,
-  "total_inference_time_seconds": 5.878309299994726
+  "mean_inference_time_seconds": 0.010151642782224362,
+  "total_inference_time_seconds": 7.735551800054964
 }
